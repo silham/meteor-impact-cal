@@ -1,103 +1,205 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import { MeteorParameters, ImpactResults, ImpactZone } from '@/types/impact.types';
+import { ImpactCalculator } from '@/lib/impactCalculator';
+import ParameterPanel from '@/components/UI/ParameterPanel';
+import ResultsPanel from '@/components/UI/ResultsPanel';
+import TestCalculations from '@/components/TestCalculations';
+
+// Dynamic import to avoid SSR issues with Leaflet
+const InteractiveMap = dynamic(() => import('@/components/Map/InteractiveMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
+      <p className="text-gray-500">Loading map...</p>
+    </div>
+  ),
+});
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [parameters, setParameters] = useState<MeteorParameters>({
+    diameter: 100,
+    velocity: 20,
+    impactAngle: 45,
+    composition: 'stony',
+    location: { lat: 0, lng: 0 },
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const [results, setResults] = useState<ImpactResults | null>(null);
+  const [impactZones, setImpactZones] = useState<ImpactZone[]>([]);
+
+  // Calculate impact whenever parameters change
+  useEffect(() => {
+    if (parameters.location.lat === 0 && parameters.location.lng === 0) {
+      setResults(null);
+      setImpactZones([]);
+      return;
+    }
+
+    const newResults = ImpactCalculator.calculateImpact(parameters);
+    setResults(newResults);
+
+    // Generate impact zones for visualization
+    const zones: ImpactZone[] = [];
+
+    // Crater (only for surface impacts)
+    if (newResults.impactType === 'surface' && newResults.craterDiameter > 0) {
+      zones.push({
+        lat: parameters.location.lat,
+        lng: parameters.location.lng,
+        radius: newResults.craterDiameter / 2,
+        color: '#8B4513',
+        label: 'Crater',
+      });
+    }
+
+    // Thermal radiation zone
+    if (newResults.thermalRadius > 0) {
+      zones.push({
+        lat: parameters.location.lat,
+        lng: parameters.location.lng,
+        radius: newResults.thermalRadius * 1000,
+        color: '#FF8C00',
+        label: 'Thermal Radiation (3rd degree burns)',
+      });
+    }
+
+    // Air blast zones
+    if (newResults.blastRadius.twentyPsi > 0) {
+      zones.push({
+        lat: parameters.location.lat,
+        lng: parameters.location.lng,
+        radius: newResults.blastRadius.twentyPsi * 1000,
+        color: '#DC143C',
+        label: '20 psi overpressure',
+      });
+    }
+
+    if (newResults.blastRadius.fivePsi > 0) {
+      zones.push({
+        lat: parameters.location.lat,
+        lng: parameters.location.lng,
+        radius: newResults.blastRadius.fivePsi * 1000,
+        color: '#FF6347',
+        label: '5 psi overpressure',
+      });
+    }
+
+    if (newResults.blastRadius.onePsi > 0) {
+      zones.push({
+        lat: parameters.location.lat,
+        lng: parameters.location.lng,
+        radius: newResults.blastRadius.onePsi * 1000,
+        color: '#FFD700',
+        label: '1 psi overpressure',
+      });
+    }
+
+    setImpactZones(zones);
+  }, [parameters]);
+
+  const handleParameterChange = (newParams: Partial<MeteorParameters>) => {
+    setParameters((prev) => ({ ...prev, ...newParams }));
+  };
+
+  const handleLocationSelect = (lat: number, lng: number) => {
+    setParameters((prev) => ({ ...prev, location: { lat, lng } }));
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
+      {/* Test calculations component (check browser console) */}
+      <TestCalculations />
+      
+      {/* Header */}
+      <header className="bg-black/30 backdrop-blur-sm border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <h1 className="text-4xl font-bold text-white mb-2">
+            🌠 Meteor Impact Simulator
+          </h1>
+          <p className="text-gray-300">
+            NASA Space Apps 2025 - Interactive Asteroid Impact Calculator
+          </p>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Left Sidebar - Parameters */}
+          <div className="lg:col-span-1">
+            <ParameterPanel
+              parameters={parameters}
+              onParameterChange={handleParameterChange}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+
+          {/* Center - Map */}
+          <div className="lg:col-span-2 h-[600px]">
+            <InteractiveMap
+              impactLocation={
+                parameters.location.lat !== 0 || parameters.location.lng !== 0
+                  ? parameters.location
+                  : null
+              }
+              impactZones={impactZones}
+              onLocationSelect={handleLocationSelect}
+            />
+          </div>
+
+          {/* Right Sidebar - Results */}
+          <div className="lg:col-span-1">
+            <ResultsPanel
+              results={results}
+              hasLocation={parameters.location.lat !== 0 || parameters.location.lng !== 0}
+            />
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div className="mt-8 bg-white p-6 rounded-lg shadow-lg">
+          <h3 className="text-lg font-bold text-gray-800 mb-4">Impact Zone Legend</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-[#8B4513] border-2 border-gray-300"></div>
+              <span className="text-sm text-gray-700">Crater (surface only)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-[#FF8C00] border-2 border-gray-300"></div>
+              <span className="text-sm text-gray-700">Thermal radiation</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-[#DC143C] border-2 border-gray-300"></div>
+              <span className="text-sm text-gray-700">20 psi blast</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-[#FF6347] border-2 border-gray-300"></div>
+              <span className="text-sm text-gray-700">5 psi blast</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-[#FFD700] border-2 border-gray-300"></div>
+              <span className="text-sm text-gray-700">1 psi blast</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Info */}
+        <div className="mt-8 bg-black/30 backdrop-blur-sm p-6 rounded-lg border border-white/10">
+          <h3 className="text-lg font-bold text-white mb-3">About This Simulator</h3>
+          <p className="text-gray-300 text-sm leading-relaxed mb-3">
+            This simulator uses physics equations from the Earth Impact Effects Program to calculate 
+            the destructive effects of asteroid and comet impacts. Enter meteor parameters or choose 
+            from historical events like Tunguska, Chelyabinsk, or the Chicxulub impact that ended 
+            the dinosaurs.
+          </p>
+          <p className="text-gray-400 text-xs">
+            Physics calculations based on Collins et al. (2005) and Marcus et al. (2010). 
+            Map data © OpenStreetMap contributors.
+          </p>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }

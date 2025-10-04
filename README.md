@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌠 Meteor Impact Simulator
 
-## Getting Started
+An interactive web application for simulating asteroid and comet impacts on Earth, built for NASA Space Apps 2025.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![React](https://img.shields.io/badge/React-18-blue)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8)
+
+## Features
+
+- **Interactive World Map**: Click anywhere on Earth to select an impact location using OpenStreetMap
+- **Real-time Physics Calculations**: Accurate impact modeling based on Earth Impact Effects Program equations
+- **Multiple Impact Zones**: Visual representation of crater, thermal radiation, and blast damage zones
+- **Historical Presets**: Simulate famous impacts like Tunguska, Chelyabinsk, Chicxulub, and more
+- **Customizable Parameters**: Adjust meteor size, velocity, angle, and composition
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+
+## Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Usage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Select Impact Location**: Click anywhere on the interactive map
+2. **Choose a Preset** (optional): Select from historical events like Tunguska or Chicxulub
+3. **Adjust Parameters**: Use sliders to customize:
+   - Diameter (1m - 1km, logarithmic scale)
+   - Velocity (11 - 72 km/s)
+   - Impact Angle (15° - 90°)
+   - Composition (Iron, Stony, Carbonaceous, Comet)
+4. **View Results**: See energy released, crater size, seismic magnitude, and damage zones
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Impact Zones
 
-## Learn More
+- **🟤 Crater**: Impact crater (surface impacts only)
+- **🟠 Thermal**: 3rd degree burn radius
+- **🔴 20 psi**: Concrete buildings severely damaged
+- **🟡 5 psi**: Most buildings collapse
+- **🟡 1 psi**: Glass shatters, minor injuries
 
-To learn more about Next.js, take a look at the following resources:
+## Physics Calculations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The simulator uses equations from Collins et al. (2005) and Marcus et al. (2010):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Kinetic Energy**: E = ½mv²
+- **Crater Formation**: Based on transient crater scaling
+- **Air Blast**: TNT-equivalent scaling laws
+- **Thermal Radiation**: Radiative energy distribution
+- **Seismic Effects**: Richter scale magnitude
+
+## Tech Stack
+
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript
+- **Mapping**: React Leaflet + OpenStreetMap
+- **Styling**: Tailwind CSS
+- **Physics**: Custom impact calculator based on scientific research
+
+## Project Structure
+
+```
+meteor-impact-cal2/
+├── app/
+│   ├── page.tsx              # Main application component
+│   ├── layout.tsx            # Root layout
+│   └── globals.css           # Global styles
+├── components/
+│   ├── Map/
+│   │   └── InteractiveMap.tsx    # Leaflet map component
+│   └── UI/
+│       ├── ParameterPanel.tsx    # Input controls
+│       └── ResultsPanel.tsx      # Impact results display
+├── lib/
+│   ├── impactCalculator.ts   # Physics calculations
+│   └── presets.ts            # Historical scenarios
+└── types/
+    └── impact.types.ts       # TypeScript type definitions
+```
+
+## Scientific References
+
+- Collins, G.S., Melosh, H.J., Marcus, R.A. (2005). "Earth Impact Effects Program"
+- Marcus, R., Melosh, H.J., Collins, G. (2010). "Earth Impact Effects Program: A Web-based computer program for calculating the regional environmental consequences of a meteoroid impact on Earth"
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT
+
+## Author
+
+Built for NASA Space Apps 2025
+
