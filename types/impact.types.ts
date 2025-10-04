@@ -3,6 +3,10 @@ export interface MeteorParameters {
   velocity: number; // km/s
   composition: 'iron' | 'stony' | 'carbonaceous' | 'comet';
   location: { lat: number; lng: number };
+  // NASA asteroid data (optional)
+  name?: string;
+  nasaId?: string;
+  isPotentiallyHazardous?: boolean;
 }
 
 export interface ImpactResults {

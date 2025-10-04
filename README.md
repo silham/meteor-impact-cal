@@ -9,12 +9,35 @@ An interactive web application for simulating asteroid and comet impacts on Eart
 
 ## Features
 
+- **🛸 Real NASA Asteroids**: Browse and simulate impacts from actual Near Earth Objects in NASA's database
 - **Interactive World Map**: Click anywhere on Earth to select an impact location using OpenStreetMap
 - **Real-time Physics Calculations**: Accurate impact modeling based on Earth Impact Effects Program equations
 - **Multiple Impact Zones**: Visual representation of crater, thermal radiation, and blast damage zones
 - **Historical Presets**: Simulate famous impacts like Tunguska, Chelyabinsk, Chicxulub, and more
 - **Customizable Parameters**: Adjust meteor size, velocity, angle, and composition
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
+
+## NASA API Integration
+
+This app now includes **real asteroid data** from NASA's Near Earth Object Web Service (NeoWs)!
+
+### Getting Started with NASA Data
+
+1. **Get a free API key** at [api.nasa.gov](https://api.nasa.gov/) (takes 30 seconds)
+2. Add it to `.env.local`:
+   ```bash
+   NEXT_PUBLIC_NASA_API_KEY=your_key_here
+   ```
+3. Click "Real NASA Asteroids" in the sidebar to browse actual asteroids
+4. Select any asteroid to simulate its impact with real diameter and velocity data
+
+**Features:**
+- Browse real Near Earth Objects from NASA's database
+- View official names, diameters, and approach velocities
+- See which asteroids are classified as Potentially Hazardous (PHA)
+- Auto-fill impact parameters with real NASA data
+
+For detailed documentation, see [NASA_API_INTEGRATION.md](./NASA_API_INTEGRATION.md)
 
 ## Quick Start
 

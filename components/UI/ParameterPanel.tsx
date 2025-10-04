@@ -2,6 +2,7 @@
 
 import { MeteorParameters } from '@/types/impact.types';
 import { PRESET_SCENARIOS } from '@/lib/presets';
+import NASAAsteroidSelector from './NASAAsteroidSelector';
 
 interface ParameterPanelProps {
   parameters: MeteorParameters;
@@ -30,8 +31,19 @@ export default function ParameterPanel({
           <h3 className="text-lg font-bold text-gray-800 capitalize">
             {parameters.composition} Asteroid
           </h3>
+          {parameters.name && (
+            <p className="text-sm text-gray-600 mt-1">
+              <strong>NASA:</strong> {parameters.name}
+              {parameters.isPotentiallyHazardous && (
+                <span className="ml-2 text-red-600 font-bold">⚠️ PHA</span>
+              )}
+            </p>
+          )}
         </div>
       </div>
+
+      {/* NASA Real Asteroids Selector */}
+      <NASAAsteroidSelector onSelectAsteroid={onParameterChange} />
 
       {/* Preset Scenarios */}
       <div className="space-y-2">
