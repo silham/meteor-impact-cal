@@ -20,10 +20,18 @@ export default function ParameterPanel({
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">
-        Meteor Parameters
-      </h2>
+    <div className="space-y-6">
+      {/* Asteroid Type Carousel (simplified as dropdown for now) */}
+      <div className="space-y-3">
+        <div className="text-center">
+          <div className="w-32 h-32 mx-auto mb-3 bg-gray-200 rounded-full flex items-center justify-center">
+            <span className="text-4xl">☄️</span>
+          </div>
+          <h3 className="text-lg font-bold text-gray-800 capitalize">
+            {parameters.composition} Asteroid
+          </h3>
+        </div>
+      </div>
 
       {/* Preset Scenarios */}
       <div className="space-y-2">
@@ -31,12 +39,12 @@ export default function ParameterPanel({
           Preset Scenarios
         </label>
         <select
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-800 font-medium"
           onChange={(e) => handlePresetSelect(e.target.value)}
           defaultValue=""
         >
           <option value="" disabled>
-            Select a preset scenario...
+            Choose a scenario...
           </option>
           {PRESET_SCENARIOS.map((preset) => (
             <option key={preset.name} value={preset.name}>
@@ -46,13 +54,18 @@ export default function ParameterPanel({
         </select>
       </div>
 
-      {/* Diameter - Logarithmic scale for better control */}
-      <div className="space-y-2">
-        <label className="block text-sm font-semibold text-gray-700">
-          Diameter: {parameters.diameter >= 1000 
-            ? `${(parameters.diameter / 1000).toFixed(2)} km` 
-            : `${parameters.diameter.toLocaleString()} meters`}
-        </label>
+      {/* Diameter Slider */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <span>📏</span> Diameter
+          </label>
+          <span className="text-lg font-bold text-gray-900">
+            {parameters.diameter >= 1000 
+              ? `${(parameters.diameter / 1000).toFixed(2)} km` 
+              : `${parameters.diameter.toLocaleString()} m`}
+          </span>
+        </div>
         <input
           type="range"
           min="0"
@@ -64,21 +77,20 @@ export default function ParameterPanel({
             const diameter = Math.pow(10, logValue);
             onParameterChange({ diameter: Math.round(diameter) });
           }}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+          className="w-full h-3 bg-gray-300 rounded-lg appearance-none cursor-pointer slider-black"
         />
-        <div className="flex justify-between text-xs text-gray-500">
-          <span>1m</span>
-          <span>10m</span>
-          <span>100m</span>
-          <span>1km</span>
-        </div>
       </div>
 
-      {/* Velocity */}
-      <div className="space-y-2">
-        <label className="block text-sm font-semibold text-gray-700">
-          Velocity: {parameters.velocity.toFixed(1)} km/s
-        </label>
+      {/* Speed Slider */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <span>⚡</span> Speed
+          </label>
+          <span className="text-lg font-bold text-gray-900">
+            {parameters.velocity.toFixed(1)} km/s
+          </span>
+        </div>
         <input
           type="range"
           min="11"
@@ -88,69 +100,44 @@ export default function ParameterPanel({
           onChange={(e) =>
             onParameterChange({ velocity: parseFloat(e.target.value) })
           }
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+          className="w-full h-3 bg-gray-300 rounded-lg appearance-none cursor-pointer slider-black"
         />
-        <div className="flex justify-between text-xs text-gray-500">
-          <span>11 km/s</span>
-          <span>72 km/s</span>
-        </div>
       </div>
 
-      {/* Impact Angle */}
+      {/* Composition Selector */}
       <div className="space-y-2">
         <label className="block text-sm font-semibold text-gray-700">
-          Impact Angle: {parameters.impactAngle}°
+          Composition Type
         </label>
-        <input
-          type="range"
-          min="15"
-          max="90"
-          step="5"
-          value={parameters.impactAngle}
-          onChange={(e) =>
-            onParameterChange({ impactAngle: parseFloat(e.target.value) })
-          }
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-        />
-        <div className="flex justify-between text-xs text-gray-500">
-          <span>15° (grazing)</span>
-          <span>90° (vertical)</span>
+        <div className="grid grid-cols-2 gap-2">
+          {(['iron', 'stony', 'carbonaceous', 'comet'] as const).map((comp) => (
+            <button
+              key={comp}
+              onClick={() => onParameterChange({ composition: comp })}
+              className={`px-4 py-3 rounded-lg font-medium transition-all ${
+                parameters.composition === comp
+                  ? 'bg-gray-800 text-white shadow-lg'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              {comp.charAt(0).toUpperCase() + comp.slice(1)}
+            </button>
+          ))}
         </div>
-      </div>
-
-      {/* Composition */}
-      <div className="space-y-2">
-        <label className="block text-sm font-semibold text-gray-700">
-          Composition
-        </label>
-        <select
-          value={parameters.composition}
-          onChange={(e) =>
-            onParameterChange({
-              composition: e.target.value as MeteorParameters['composition'],
-            })
-          }
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        >
-          <option value="iron">Iron (7,800 kg/m³)</option>
-          <option value="stony">Stony (3,000 kg/m³)</option>
-          <option value="carbonaceous">Carbonaceous (2,000 kg/m³)</option>
-          <option value="comet">Comet Ice (1,000 kg/m³)</option>
-        </select>
       </div>
 
       {/* Location Display */}
       {parameters.location.lat !== 0 && parameters.location.lng !== 0 && (
         <div className="pt-4 border-t border-gray-200">
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Impact Location
+            📍 Impact Coordinates
           </label>
-          <div className="text-sm text-gray-600 space-y-1">
+          <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg space-y-1">
             <p>
-              Latitude: {parameters.location.lat.toFixed(4)}°
+              <span className="font-medium">Lat:</span> {parameters.location.lat.toFixed(4)}°
             </p>
             <p>
-              Longitude: {parameters.location.lng.toFixed(4)}°
+              <span className="font-medium">Lng:</span> {parameters.location.lng.toFixed(4)}°
             </p>
           </div>
         </div>

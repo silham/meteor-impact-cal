@@ -1,7 +1,6 @@
 export interface MeteorParameters {
   diameter: number; // meters
   velocity: number; // km/s
-  impactAngle: number; // degrees
   composition: 'iron' | 'stony' | 'carbonaceous' | 'comet';
   location: { lat: number; lng: number };
 }

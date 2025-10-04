@@ -2,13 +2,13 @@ import { ImpactCalculator } from './impactCalculator';
 import { MeteorParameters } from '@/types/impact.types';
 
 // Test cases to verify airburst vs surface impact determination
+// All tests now use fixed 45° impact angle (most probable)
 const testCases: Array<{name: string, params: Omit<MeteorParameters, 'location'>, expected: 'airburst' | 'surface'}> = [
   {
     name: "Chelyabinsk - Small stony meteor (should be airburst)",
     params: {
       diameter: 20,
       velocity: 19,
-      impactAngle: 18,
       composition: 'stony',
     },
     expected: 'airburst'
@@ -18,7 +18,6 @@ const testCases: Array<{name: string, params: Omit<MeteorParameters, 'location'>
     params: {
       diameter: 60,
       velocity: 15,
-      impactAngle: 45,
       composition: 'comet',
     },
     expected: 'airburst'
@@ -28,7 +27,6 @@ const testCases: Array<{name: string, params: Omit<MeteorParameters, 'location'>
     params: {
       diameter: 50,
       velocity: 12.8,
-      impactAngle: 45,
       composition: 'iron',
     },
     expected: 'surface'
@@ -38,7 +36,6 @@ const testCases: Array<{name: string, params: Omit<MeteorParameters, 'location'>
     params: {
       diameter: 200,
       velocity: 20,
-      impactAngle: 45,
       composition: 'stony',
     },
     expected: 'surface'
@@ -48,7 +45,6 @@ const testCases: Array<{name: string, params: Omit<MeteorParameters, 'location'>
     params: {
       diameter: 1000,
       velocity: 20,
-      impactAngle: 45,
       composition: 'stony',
     },
     expected: 'surface'
@@ -58,7 +54,6 @@ const testCases: Array<{name: string, params: Omit<MeteorParameters, 'location'>
     params: {
       diameter: 10000,
       velocity: 20,
-      impactAngle: 60,
       composition: 'stony',
     },
     expected: 'surface'
@@ -68,7 +63,6 @@ const testCases: Array<{name: string, params: Omit<MeteorParameters, 'location'>
     params: {
       diameter: 5,
       velocity: 30,
-      impactAngle: 45,
       composition: 'comet',
     },
     expected: 'airburst'
@@ -78,7 +72,6 @@ const testCases: Array<{name: string, params: Omit<MeteorParameters, 'location'>
     params: {
       diameter: 100,
       velocity: 15,
-      impactAngle: 45,
       composition: 'iron',
     },
     expected: 'surface'
@@ -88,7 +81,6 @@ const testCases: Array<{name: string, params: Omit<MeteorParameters, 'location'>
     params: {
       diameter: 80,
       velocity: 25,
-      impactAngle: 30,
       composition: 'carbonaceous',
     },
     expected: 'airburst'
@@ -96,7 +88,7 @@ const testCases: Array<{name: string, params: Omit<MeteorParameters, 'location'>
 ];
 
 export function runTests() {
-  console.log('🧪 Running Impact Calculator Tests...\n');
+  console.log('🧪 Running Impact Calculator Tests (45° angle assumed)...\n');
   
   let passed = 0;
   let failed = 0;

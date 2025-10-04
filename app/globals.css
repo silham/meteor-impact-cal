@@ -65,3 +65,41 @@ input[type="range"].slider::-webkit-slider-thumb:hover {
 input[type="range"].slider::-moz-range-thumb:hover {
   background: #2563eb;
 }
+
+/* Black slider styling */
+input[type="range"].slider-black {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="range"].slider-black::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: #1f2937;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+input[type="range"].slider-black::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: #1f2937;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+input[type="range"].slider-black::-webkit-slider-thumb:hover {
+  background: #111827;
+  transform: scale(1.1);
+}
+
+input[type="range"].slider-black::-moz-range-thumb:hover {
+  background: #111827;
+  transform: scale(1.1);
+}

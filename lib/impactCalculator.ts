@@ -15,7 +15,9 @@ export class ImpactCalculator {
 
   static calculateImpact(params: MeteorParameters): ImpactResults {
     const density = this.DENSITIES[params.composition];
-    const angleRad = (params.impactAngle * Math.PI) / 180;
+    // Use 45° as the most probable impact angle (sin(45°) = 0.707)
+    // This is statistically the most common angle for random impacts
+    const angleRad = Math.PI / 4; // 45 degrees in radians
 
     // Mass: spherical volume × density (kg)
     const radius = params.diameter / 2;

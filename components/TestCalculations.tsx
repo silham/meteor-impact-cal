@@ -5,13 +5,12 @@ import { ImpactCalculator } from '@/lib/impactCalculator';
 
 export default function TestCalculations() {
   useEffect(() => {
-    console.log('🧪 Testing Impact Calculations...\n');
+    console.log('🧪 Testing Impact Calculations (45° angle assumed)...\n');
 
     // Test 1: Large meteor (1000m stony) - MUST be surface impact
     const large = ImpactCalculator.calculateImpact({
       diameter: 1000,
       velocity: 20,
-      impactAngle: 45,
       composition: 'stony',
       location: { lat: 0, lng: 0 },
     });
@@ -26,7 +25,6 @@ export default function TestCalculations() {
     const chicxulub = ImpactCalculator.calculateImpact({
       diameter: 10000,
       velocity: 20,
-      impactAngle: 60,
       composition: 'stony',
       location: { lat: 0, lng: 0 },
     });
@@ -41,7 +39,6 @@ export default function TestCalculations() {
     const chelyabinsk = ImpactCalculator.calculateImpact({
       diameter: 20,
       velocity: 19,
-      impactAngle: 18,
       composition: 'stony',
       location: { lat: 0, lng: 0 },
     });
@@ -56,7 +53,6 @@ export default function TestCalculations() {
     const tunguska = ImpactCalculator.calculateImpact({
       diameter: 60,
       velocity: 15,
-      impactAngle: 45,
       composition: 'comet',
       location: { lat: 0, lng: 0 },
     });
@@ -71,7 +67,6 @@ export default function TestCalculations() {
     const barringer = ImpactCalculator.calculateImpact({
       diameter: 50,
       velocity: 12.8,
-      impactAngle: 45,
       composition: 'iron',
       location: { lat: 0, lng: 0 },
     });
@@ -86,7 +81,6 @@ export default function TestCalculations() {
     const large2 = ImpactCalculator.calculateImpact({
       diameter: 500,
       velocity: 17,
-      impactAngle: 45,
       composition: 'iron',
       location: { lat: 0, lng: 0 },
     });

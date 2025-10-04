@@ -33,9 +33,10 @@ export default function InteractiveMap({
         zoomControl: true,
       });
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap contributors © CARTO',
         maxZoom: 19,
+        subdomains: 'abcd',
       }).addTo(map);
 
       // Add click handler
@@ -130,14 +131,7 @@ export default function InteractiveMap({
 
   return (
     <div className="relative w-full h-full">
-      <div id="map" className="w-full h-full rounded-lg shadow-lg" />
-      {!impactLocation && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white px-6 py-3 rounded-lg shadow-lg z-[1000] pointer-events-none">
-          <p className="text-gray-700 font-medium">
-            ⬆️ Click anywhere on the map to select impact location
-          </p>
-        </div>
-      )}
+      <div id="map" className="w-full h-full" />
     </div>
   );
 }

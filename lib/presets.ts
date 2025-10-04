@@ -7,7 +7,6 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     parameters: {
       diameter: 1,
       velocity: 17,
-      impactAngle: 45,
       composition: 'stony',
     },
   },
@@ -17,7 +16,6 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     parameters: {
       diameter: 20,
       velocity: 19,
-      impactAngle: 18,
       composition: 'stony',
     },
   },
@@ -27,7 +25,6 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     parameters: {
       diameter: 50,
       velocity: 12.8,
-      impactAngle: 45,
       composition: 'iron',
     },
   },
@@ -37,7 +34,6 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     parameters: {
       diameter: 60,
       velocity: 15,
-      impactAngle: 45,
       composition: 'comet',
     },
   },
@@ -47,7 +43,6 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     parameters: {
       diameter: 200,
       velocity: 17,
-      impactAngle: 45,
       composition: 'stony',
     },
   },
@@ -57,7 +52,6 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     parameters: {
       diameter: 500,
       velocity: 20,
-      impactAngle: 45,
       composition: 'stony',
     },
   },
@@ -67,7 +61,6 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     parameters: {
       diameter: 1000,
       velocity: 20,
-      impactAngle: 60,
       composition: 'stony',
     },
   },

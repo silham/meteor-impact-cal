@@ -22,7 +22,6 @@ export default function Home() {
   const [parameters, setParameters] = useState<MeteorParameters>({
     diameter: 100,
     velocity: 20,
-    impactAngle: 45,
     composition: 'stony',
     location: { lat: 0, lng: 0 },
   });
@@ -109,97 +108,76 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
+    <div className="fixed inset-0 flex overflow-hidden">
       {/* Test calculations component (check browser console) */}
       <TestCalculations />
       
-      {/* Header */}
-      <header className="bg-black/30 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            🌠 Meteor Impact Simulator
+      {/* Full Screen Map */}
+      <div className="flex-1 relative">
+        <InteractiveMap
+          impactLocation={
+            parameters.location.lat !== 0 || parameters.location.lng !== 0
+              ? parameters.location
+              : null
+          }
+          impactZones={impactZones}
+          onLocationSelect={handleLocationSelect}
+        />
+        
+        {/* Top Left Logo/Title */}
+        <div className="absolute top-4 left-4 z-[1000] pointer-events-none">
+          <h1 className="text-2xl font-bold text-white drop-shadow-lg">
+            METEOR IMPACT
           </h1>
-          <p className="text-gray-300">
-            NASA Space Apps 2025 - Interactive Asteroid Impact Calculator
-          </p>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Left Sidebar - Parameters */}
-          <div className="lg:col-span-1">
-            <ParameterPanel
-              parameters={parameters}
-              onParameterChange={handleParameterChange}
-            />
-          </div>
-
-          {/* Center - Map */}
-          <div className="lg:col-span-2 h-[600px]">
-            <InteractiveMap
-              impactLocation={
-                parameters.location.lat !== 0 || parameters.location.lng !== 0
-                  ? parameters.location
-                  : null
-              }
-              impactZones={impactZones}
-              onLocationSelect={handleLocationSelect}
-            />
-          </div>
-
-          {/* Right Sidebar - Results */}
-          <div className="lg:col-span-1">
-            <ResultsPanel
-              results={results}
-              hasLocation={parameters.location.lat !== 0 || parameters.location.lng !== 0}
-            />
-          </div>
         </div>
 
-        {/* Legend */}
-        <div className="mt-8 bg-white p-6 rounded-lg shadow-lg">
-          <h3 className="text-lg font-bold text-gray-800 mb-4">Impact Zone Legend</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-[#8B4513] border-2 border-gray-300"></div>
-              <span className="text-sm text-gray-700">Crater (surface only)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-[#FF8C00] border-2 border-gray-300"></div>
-              <span className="text-sm text-gray-700">Thermal radiation</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-[#DC143C] border-2 border-gray-300"></div>
-              <span className="text-sm text-gray-700">20 psi blast</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-[#FF6347] border-2 border-gray-300"></div>
-              <span className="text-sm text-gray-700">5 psi blast</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-[#FFD700] border-2 border-gray-300"></div>
-              <span className="text-sm text-gray-700">1 psi blast</span>
-            </div>
+        {/* Bottom Center Click Prompt */}
+        {(!parameters.location.lat && !parameters.location.lng) && (
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-[1000] pointer-events-none">
+            <button className="bg-white px-6 py-3 rounded-full shadow-lg font-semibold text-gray-800 hover:bg-gray-100 transition-colors pointer-events-auto">
+              CLICK IMPACT LOCATION
+            </button>
           </div>
+        )}
+      </div>
+
+      {/* Right Side Panel */}
+      <div className="w-96 bg-white shadow-2xl overflow-y-auto z-[1000] flex flex-col">
+        <div className="p-6 flex-1">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+            ASTEROID LAUNCHER
+          </h2>
+          
+          <ParameterPanel
+            parameters={parameters}
+            onParameterChange={handleParameterChange}
+          />
+
+          {results && (
+            <div className="mt-6">
+              <ResultsPanel
+                results={results}
+                hasLocation={parameters.location.lat !== 0 || parameters.location.lng !== 0}
+              />
+            </div>
+          )}
         </div>
 
-        {/* Footer Info */}
-        <div className="mt-8 bg-black/30 backdrop-blur-sm p-6 rounded-lg border border-white/10">
-          <h3 className="text-lg font-bold text-white mb-3">About This Simulator</h3>
-          <p className="text-gray-300 text-sm leading-relaxed mb-3">
-            This simulator uses physics equations from the Earth Impact Effects Program to calculate 
-            the destructive effects of asteroid and comet impacts. Enter meteor parameters or choose 
-            from historical events like Tunguska, Chelyabinsk, or the Chicxulub impact that ended 
-            the dinosaurs.
-          </p>
-          <p className="text-gray-400 text-xs">
-            Physics calculations based on Collins et al. (2005) and Marcus et al. (2010). 
-            Map data © OpenStreetMap contributors.
-          </p>
-        </div>
-      </main>
+        {/* Bottom action area */}
+        {parameters.location.lat !== 0 || parameters.location.lng !== 0 ? (
+          <div className="p-6 border-t border-gray-200 bg-gray-50">
+            <p className="text-sm text-gray-600 text-center">
+              Impact location selected
+            </p>
+          </div>
+        ) : (
+          <div className="p-6 border-t border-gray-200 bg-gray-50">
+            <p className="text-sm text-gray-600 text-center">
+              Select an impact location
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
