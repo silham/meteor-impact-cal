@@ -72,8 +72,8 @@ export default function ResultsPanel({ results, hasLocation }: ResultsPanelProps
             </div>
           )}
 
-          {/* Seismic */}
-          {(results.impactType === 'surface' || results.seismicMagnitude > 2) && (
+          {/* Seismic - Only show for surface impacts */}
+          {results.impactType === 'surface' && (
             <div className="p-3 rounded-lg" style={{ background: 'rgb(30, 30, 48)' }}>
               <p className="text-xs mb-1" style={{ color: '#9ca3af' }}>Seismic Magnitude</p>
               <p className="text-xl font-bold" style={{ color: '#e5e5e5' }}>
