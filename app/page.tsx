@@ -7,6 +7,7 @@ import { MeteorParameters, ImpactResults, ImpactZone } from '@/types/impact.type
 import { ImpactCalculator } from '@/lib/impactCalculator';
 import ParameterPanel from '@/components/UI/ParameterPanel';
 import ResultsPanel from '@/components/UI/ResultsPanel';
+import AIAssistant from '@/components/UI/AIAssistant';
 import TestCalculations from '@/components/TestCalculations';
 
 // Dynamic import to avoid SSR issues with Leaflet
@@ -258,8 +259,15 @@ export default function Home() {
           />
 
           {results && (
-            <div className="mt-6">
+            <div className="mt-6 space-y-6">
               <ResultsPanel
+                results={results}
+                hasLocation={parameters.location.lat !== 0 || parameters.location.lng !== 0}
+              />
+              
+              {/* AI Assistant */}
+              <AIAssistant
+                parameters={parameters}
                 results={results}
                 hasLocation={parameters.location.lat !== 0 || parameters.location.lng !== 0}
               />
