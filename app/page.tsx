@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { MeteorParameters, ImpactResults, ImpactZone } from '@/types/impact.types';
 import { ImpactCalculator } from '@/lib/impactCalculator';
@@ -18,7 +19,59 @@ const InteractiveMap = dynamic(() => import('@/components/Map/InteractiveMap'), 
   ),
 });
 
+/**
+ * Parse URL parameters to get initial meteor parameters
+ */
+function parseURLParams(searchParams: URLSearchParams): Partial<MeteorParameters> {
+  const params: Partial<MeteorParameters> = {};
+  
+  // Parse diameter
+  const diameter = searchParams.get('diameter');
+  if (diameter) {
+    const parsed = parseFloat(diameter);
+    if (!isNaN(parsed) && parsed > 0) {
+      params.diameter = parsed;
+    }
+  }
+  
+  // Parse velocity/speed
+  const velocity = searchParams.get('velocity') || searchParams.get('speed');
+  if (velocity) {
+    const parsed = parseFloat(velocity);
+    if (!isNaN(parsed) && parsed >= 11 && parsed <= 72) {
+      params.velocity = parsed;
+    }
+  }
+  
+  // Parse composition
+  const composition = searchParams.get('composition') || searchParams.get('type');
+  if (composition) {
+    const normalized = composition.toLowerCase();
+    if (['iron', 'stony', 'carbonaceous', 'comet'].includes(normalized)) {
+      params.composition = normalized as 'iron' | 'stony' | 'carbonaceous' | 'comet';
+    }
+  }
+  
+  // Parse location coordinates
+  const lat = searchParams.get('lat') || searchParams.get('latitude');
+  const lng = searchParams.get('lng') || searchParams.get('lon') || searchParams.get('longitude');
+  if (lat && lng) {
+    const parsedLat = parseFloat(lat);
+    const parsedLng = parseFloat(lng);
+    if (!isNaN(parsedLat) && !isNaN(parsedLng) && 
+        parsedLat >= -90 && parsedLat <= 90 && 
+        parsedLng >= -180 && parsedLng <= 180) {
+      params.location = { lat: parsedLat, lng: parsedLng };
+    }
+  }
+  
+  return params;
+}
+
 export default function Home() {
+  const searchParams = useSearchParams();
+  const [isInitialized, setIsInitialized] = useState(false);
+  
   const [parameters, setParameters] = useState<MeteorParameters>({
     diameter: 100,
     velocity: 20,
@@ -28,6 +81,17 @@ export default function Home() {
 
   const [results, setResults] = useState<ImpactResults | null>(null);
   const [impactZones, setImpactZones] = useState<ImpactZone[]>([]);
+
+  // Initialize parameters from URL on component mount
+  useEffect(() => {
+    if (!isInitialized && searchParams) {
+      const urlParams = parseURLParams(searchParams);
+      if (Object.keys(urlParams).length > 0) {
+        setParameters((prev) => ({ ...prev, ...urlParams }));
+      }
+      setIsInitialized(true);
+    }
+  }, [searchParams, isInitialized]);
 
   // Calculate impact whenever parameters change
   useEffect(() => {
@@ -107,8 +171,52 @@ export default function Home() {
     setParameters((prev) => ({ ...prev, location: { lat, lng } }));
   };
 
+  // Generate shareable URL with current parameters
+  const generateShareURL = () => {
+    const baseURL = window.location.origin + window.location.pathname;
+    const params = new URLSearchParams();
+    
+    params.set('diameter', parameters.diameter.toString());
+    params.set('velocity', parameters.velocity.toString());
+    params.set('composition', parameters.composition);
+    
+    if (parameters.location.lat !== 0 || parameters.location.lng !== 0) {
+      params.set('lat', parameters.location.lat.toFixed(6));
+      params.set('lng', parameters.location.lng.toFixed(6));
+    }
+    
+    return `${baseURL}?${params.toString()}`;
+  };
+
+  const handleShare = async () => {
+    const shareURL = generateShareURL();
+    
+    // Try to use Web Share API if available
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Meteor Impact Simulation',
+          text: `Check out this meteor impact scenario: ${parameters.diameter}m ${parameters.composition} asteroid at ${parameters.velocity} km/s`,
+          url: shareURL,
+        });
+        return;
+      } catch (err) {
+        // User cancelled or share failed, fall back to clipboard
+      }
+    }
+    
+    // Fall back to copying to clipboard
+    try {
+      await navigator.clipboard.writeText(shareURL);
+      alert('Share link copied to clipboard!');
+    } catch (err) {
+      // If clipboard API fails, show the URL in a prompt
+      prompt('Copy this URL to share:', shareURL);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 flex overflow-hidden">
+    <div className="fixed inset-0 flex overflow-hidden" style={{ background: 'rgb(15, 15, 28)' }}>
       {/* Test calculations component (check browser console) */}
       <TestCalculations />
       
@@ -134,7 +242,10 @@ export default function Home() {
         {/* Bottom Center Click Prompt */}
         {(!parameters.location.lat && !parameters.location.lng) && (
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-[1000] pointer-events-none">
-            <button className="bg-white px-6 py-3 rounded-full shadow-lg font-semibold text-gray-800 hover:bg-gray-100 transition-colors pointer-events-auto">
+            <button 
+              className="px-6 py-3 rounded-full shadow-lg font-semibold transition-colors pointer-events-auto"
+              style={{ background: 'rgb(30, 30, 48)', color: '#e5e5e5', border: '1px solid rgba(255, 255, 255, 0.1)' }}
+            >
               CLICK IMPACT LOCATION
             </button>
           </div>
@@ -142,9 +253,9 @@ export default function Home() {
       </div>
 
       {/* Right Side Panel */}
-      <div className="w-96 bg-white shadow-2xl overflow-y-auto z-[1000] flex flex-col">
+      <div className="w-96 shadow-2xl overflow-y-auto z-[1000] flex flex-col" style={{ background: 'rgb(25, 25, 40)', borderLeft: '1px solid rgba(255, 255, 255, 0.1)' }}>
         <div className="p-6 flex-1">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#e5e5e5' }}>
             ASTEROID LAUNCHER
           </h2>
           
@@ -165,15 +276,25 @@ export default function Home() {
 
         {/* Bottom action area */}
         {parameters.location.lat !== 0 || parameters.location.lng !== 0 ? (
-          <div className="p-6 border-t border-gray-200 bg-gray-50">
-            <p className="text-sm text-gray-600 text-center">
-              Impact location selected
+          <div className="p-6 border-t space-y-3" style={{ borderColor: 'rgba(255, 255, 255, 0.1)', background: 'rgb(30, 30, 48)' }}>
+            <button
+              onClick={handleShare}
+              className="w-full font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-md"
+              style={{ background: '#3b82f6', color: '#fff' }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#2563eb'}
+              onMouseLeave={(e) => e.currentTarget.style.background = '#3b82f6'}
+            >
+              <span>🔗</span>
+              <span>Share This Impact</span>
+            </button>
+            <p className="text-xs text-center" style={{ color: '#9ca3af' }}>
+              Share this scenario with a unique link
             </p>
           </div>
         ) : (
-          <div className="p-6 border-t border-gray-200 bg-gray-50">
-            <p className="text-sm text-gray-600 text-center">
-              Select an impact location
+          <div className="p-6 border-t" style={{ borderColor: 'rgba(255, 255, 255, 0.1)', background: 'rgb(30, 30, 48)' }}>
+            <p className="text-sm text-center" style={{ color: '#9ca3af' }}>
+              Select an impact location on the map
             </p>
           </div>
         )}

@@ -139,52 +139,31 @@ export async function getFamousAsteroids(): Promise<NASAAsteroid[]> {
   try {
     const allAsteroids: NASAAsteroid[] = [];
     
-    // Fetch multiple pages to get more asteroids
-    // We'll fetch up to 5 pages (100 asteroids total) to find enough in our size range
-    for (let page = 0; page < 5; page++) {
-      const response = await browseNEOs(page, 20);
-      
-      // Filter for asteroids smaller than 1km with minimum size of 50m
-      const filteredAsteroids = response.near_earth_objects.filter(asteroid => {
-        const avgDiameter = (
-          asteroid.estimated_diameter.meters.estimated_diameter_min +
-          asteroid.estimated_diameter.meters.estimated_diameter_max
-        ) / 2;
-        // Only include asteroids between 50m and 1000m (1km)
-        return avgDiameter >= 50 && avgDiameter < 1000;
-      });
-      
-      allAsteroids.push(...filteredAsteroids);
-      
-      // If we have enough asteroids, stop fetching
-      if (allAsteroids.length >= 20) {
-        break;
-      }
-    }
-    
-    // If we don't have many asteroids in the 50m-1km range, also include smaller ones
-    if (allAsteroids.length < 10) {
-      for (let page = 0; page < 3; page++) {
+    // Fetch multiple pages to get at least 200 asteroids
+    // 10 pages * 20 asteroids = 200 asteroids minimum
+    for (let page = 0; page < 10; page++) {
+      try {
         const response = await browseNEOs(page, 20);
         
-        const smallerAsteroids = response.near_earth_objects.filter(asteroid => {
+        // Filter for asteroids smaller than 1km (all sizes up to 1km)
+        const filteredAsteroids = response.near_earth_objects.filter(asteroid => {
           const avgDiameter = (
             asteroid.estimated_diameter.meters.estimated_diameter_min +
             asteroid.estimated_diameter.meters.estimated_diameter_max
           ) / 2;
-          // Include asteroids from 10m to 50m as well
-          return avgDiameter >= 10 && avgDiameter < 50;
+          // Include all asteroids below 1km
+          return avgDiameter < 1000;
         });
         
-        allAsteroids.push(...smallerAsteroids);
-        
-        if (allAsteroids.length >= 20) {
-          break;
-        }
+        allAsteroids.push(...filteredAsteroids);
+      } catch (pageError) {
+        console.error(`Error fetching page ${page}:`, pageError);
+        // Continue with next page even if one fails
+        continue;
       }
     }
     
-    // Return up to 20 asteroids, sorted by size (largest first for visual interest)
+    // Return all asteroids below 1km, sorted by size (largest first for visual interest)
     return allAsteroids
       .sort((a, b) => {
         const avgA = (a.estimated_diameter.meters.estimated_diameter_min + 
@@ -192,8 +171,7 @@ export async function getFamousAsteroids(): Promise<NASAAsteroid[]> {
         const avgB = (b.estimated_diameter.meters.estimated_diameter_min + 
                      b.estimated_diameter.meters.estimated_diameter_max) / 2;
         return avgB - avgA; // Descending order
-      })
-      .slice(0, 20);
+      });
   } catch (error) {
     console.error('Error fetching famous asteroids:', error);
     return [];

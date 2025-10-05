@@ -71,8 +71,10 @@ npm run dev
 
 - **Asteroid Names**: See the official NASA designation displayed at the top
 - **PHA Badge**: Red "⚠️ PHA" badge for potentially hazardous asteroids
+- **Search Function**: Search through hundreds of asteroids by name
 - **Auto-fill Parameters**: Diameter and velocity are automatically set
 - **Composition**: Defaults to "stony" (most common NEO type)
+- **Large Dataset**: Browse 200+ real asteroids from NASA's database
 
 ## API Endpoints Used
 
@@ -81,10 +83,10 @@ npm run dev
 GET https://api.nasa.gov/neo/rest/v1/neo/browse
 ```
 - Returns paginated list of all Near Earth Objects
-- We fetch multiple pages (up to 100 asteroids) to find suitable matches
-- Primary filter: 50m - 1km diameter
-- Fallback filter: 10m - 50m if not enough larger asteroids found
-- Returns up to 20 asteroids sorted by size (largest first)
+- We fetch 10 pages (200 asteroids total)
+- Filters: All asteroids below 1km diameter
+- Returns all matching asteroids sorted by size (largest first)
+- Includes search functionality to find specific asteroids by name
 
 ### 2. Get Asteroid by ID
 ```

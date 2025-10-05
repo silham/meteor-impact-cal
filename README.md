@@ -10,12 +10,45 @@ An interactive web application for simulating asteroid and comet impacts on Eart
 ## Features
 
 - **🛸 Real NASA Asteroids**: Browse and simulate impacts from actual Near Earth Objects in NASA's database
+- **🔗 URL Parameter Support**: Share specific scenarios with direct links containing all parameters
 - **Interactive World Map**: Click anywhere on Earth to select an impact location using OpenStreetMap
 - **Real-time Physics Calculations**: Accurate impact modeling based on Earth Impact Effects Program equations
 - **Multiple Impact Zones**: Visual representation of crater, thermal radiation, and blast damage zones
 - **Historical Presets**: Simulate famous impacts like Tunguska, Chelyabinsk, Chicxulub, and more
 - **Customizable Parameters**: Adjust meteor size, velocity, angle, and composition
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
+
+## URL Parameters & Sharing
+
+Create and share specific impact scenarios using URL parameters!
+
+### Share Your Scenario
+1. Set up your impact parameters and location
+2. Click the "🔗 Share This Impact" button
+3. Share the URL with anyone to show your exact scenario
+
+### URL Format
+```
+https://your-domain.com/?diameter=500&velocity=25&composition=iron&lat=40.7128&lng=-74.0060
+```
+
+**Supported Parameters:**
+- `diameter` - Asteroid diameter in meters
+- `velocity` or `speed` - Impact velocity in km/s
+- `composition` or `type` - Asteroid type (iron, stony, carbonaceous, comet)
+- `lat` or `latitude` - Impact latitude (-90 to 90)
+- `lng`, `lon`, or `longitude` - Impact longitude (-180 to 180)
+
+**Example URLs:**
+```bash
+# Tunguska-like event over New York
+/?diameter=60&velocity=27&composition=stony&lat=40.7128&lng=-74.0060
+
+# Large iron asteroid over Tokyo
+/?diameter=500&speed=30&type=iron&lat=35.6762&lng=139.6503
+```
+
+For complete documentation, see [URL_PARAMETERS.md](./URL_PARAMETERS.md)
 
 ## NASA API Integration
 

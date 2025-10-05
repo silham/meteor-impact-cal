@@ -2,19 +2,25 @@
 
 ## What's New? 🆕
 
-Your meteor impact simulator now includes **real asteroid data from NASA**!
+Your meteor impact simulator now includes **200+ real asteroids from NASA**!
 
 ## Visual Changes
 
 ### In the Sidebar
 
 1. **New "Real NASA Asteroids" button**
-   - Located between the asteroid preview and preset scenarios
+   - Shows total count: "Real NASA Asteroids (200+)"
    - Gradient blue-to-purple design with 🛸 icon
    - Click to expand/collapse the asteroid list
 
-2. **Asteroid List (when expanded)**
-   - Shows up to 10 real asteroids from NASA's database
+2. **Search Functionality**
+   - Search box to filter asteroids by name
+   - Live filtering as you type
+   - Shows count: "Showing X asteroids below 1km diameter"
+
+3. **Asteroid List (when expanded)**
+   - Displays ALL asteroids below 1km from NASA's database
+   - Scrollable list with smooth scrolling
    - Each asteroid shows:
      - Official NASA name
      - Estimated diameter (in meters or kilometers)
@@ -82,11 +88,12 @@ README.md                                # Added NASA feature section
 
 ## Example Asteroids You'll See
 
-- **Medium-sized asteroids** (50m - 1km diameter)
-- Objects suitable for realistic impact simulations
+- **All sizes below 1km**: From tiny 1m meteoroids to 999m near-asteroids
+- Hundreds of objects suitable for realistic impact simulations
+- Full range from airburst events to major regional impacts
 - Asteroids with known approach velocities
-- Recent discoveries and tracked objects
-- **Note**: Asteroids larger than 1km are excluded (extinction-level events)
+- Recent discoveries and actively tracked objects
+- **Note**: Only asteroids smaller than 1km are shown
 
 ## Testing the Feature
 

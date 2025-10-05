@@ -22,36 +22,35 @@ export default function ParameterPanel({
 
   return (
     <div className="space-y-6">
-      {/* Asteroid Type Carousel (simplified as dropdown for now) */}
-      <div className="space-y-3">
-        <div className="text-center">
-          <div className="w-32 h-32 mx-auto mb-3 bg-gray-200 rounded-full flex items-center justify-center">
-            <span className="text-4xl">☄️</span>
-          </div>
-          <h3 className="text-lg font-bold text-gray-800 capitalize">
-            {parameters.composition} Asteroid
-          </h3>
-          {parameters.name && (
-            <p className="text-sm text-gray-600 mt-1">
-              <strong>NASA:</strong> {parameters.name}
+      {/* NASA Asteroid Name Display - Only show if from NASA */}
+      {parameters.name && (
+        <div className="space-y-2">
+          <div className="text-center p-3 rounded-lg" style={{ background: 'rgb(30, 30, 48)' }}>
+            <p className="text-sm" style={{ color: '#9ca3af' }}>
+              <strong>NASA Asteroid:</strong> {parameters.name}
               {parameters.isPotentiallyHazardous && (
-                <span className="ml-2 text-red-600 font-bold">⚠️ PHA</span>
+                <span className="ml-2 text-red-500 font-bold">⚠️ PHA</span>
               )}
             </p>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* NASA Real Asteroids Selector */}
       <NASAAsteroidSelector onSelectAsteroid={onParameterChange} />
 
       {/* Preset Scenarios */}
       <div className="space-y-2">
-        <label className="block text-sm font-semibold text-gray-700">
+        <label className="block text-sm font-semibold" style={{ color: '#e5e5e5' }}>
           Preset Scenarios
         </label>
         <select
-          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-800 font-medium"
+          className="w-full px-4 py-3 border-2 rounded-lg focus:ring-2 font-medium"
+          style={{ 
+            background: 'rgb(30, 30, 48)', 
+            borderColor: 'rgba(255, 255, 255, 0.1)', 
+            color: '#e5e5e5' 
+          }}
           onChange={(e) => handlePresetSelect(e.target.value)}
           defaultValue=""
         >
@@ -69,10 +68,10 @@ export default function ParameterPanel({
       {/* Diameter Slider */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <label className="text-sm font-semibold flex items-center gap-2" style={{ color: '#e5e5e5' }}>
             <span>📏</span> Diameter
           </label>
-          <span className="text-lg font-bold text-gray-900">
+          <span className="text-lg font-bold" style={{ color: '#e5e5e5' }}>
             {parameters.diameter >= 1000 
               ? `${(parameters.diameter / 1000).toFixed(2)} km` 
               : `${parameters.diameter.toLocaleString()} m`}
@@ -89,17 +88,18 @@ export default function ParameterPanel({
             const diameter = Math.pow(10, logValue);
             onParameterChange({ diameter: Math.round(diameter) });
           }}
-          className="w-full h-3 bg-gray-300 rounded-lg appearance-none cursor-pointer slider-black"
+          className="w-full h-3 rounded-lg appearance-none cursor-pointer"
+          style={{ background: 'rgba(255, 255, 255, 0.1)' }}
         />
       </div>
 
       {/* Speed Slider */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <label className="text-sm font-semibold flex items-center gap-2" style={{ color: '#e5e5e5' }}>
             <span>⚡</span> Speed
           </label>
-          <span className="text-lg font-bold text-gray-900">
+          <span className="text-lg font-bold" style={{ color: '#e5e5e5' }}>
             {parameters.velocity.toFixed(1)} km/s
           </span>
         </div>
@@ -112,13 +112,14 @@ export default function ParameterPanel({
           onChange={(e) =>
             onParameterChange({ velocity: parseFloat(e.target.value) })
           }
-          className="w-full h-3 bg-gray-300 rounded-lg appearance-none cursor-pointer slider-black"
+          className="w-full h-3 rounded-lg appearance-none cursor-pointer"
+          style={{ background: 'rgba(255, 255, 255, 0.1)' }}
         />
       </div>
 
       {/* Composition Selector */}
       <div className="space-y-2">
-        <label className="block text-sm font-semibold text-gray-700">
+        <label className="block text-sm font-semibold" style={{ color: '#e5e5e5' }}>
           Composition Type
         </label>
         <div className="grid grid-cols-2 gap-2">
@@ -126,11 +127,12 @@ export default function ParameterPanel({
             <button
               key={comp}
               onClick={() => onParameterChange({ composition: comp })}
-              className={`px-4 py-3 rounded-lg font-medium transition-all ${
+              className="px-4 py-3 rounded-lg font-medium transition-all"
+              style={
                 parameters.composition === comp
-                  ? 'bg-gray-800 text-white shadow-lg'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
+                  ? { background: '#3b82f6', color: '#fff' }
+                  : { background: 'rgb(30, 30, 48)', color: '#9ca3af', border: '1px solid rgba(255, 255, 255, 0.1)' }
+              }
             >
               {comp.charAt(0).toUpperCase() + comp.slice(1)}
             </button>
@@ -140,11 +142,11 @@ export default function ParameterPanel({
 
       {/* Location Display */}
       {parameters.location.lat !== 0 && parameters.location.lng !== 0 && (
-        <div className="pt-4 border-t border-gray-200">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+        <div className="pt-4 border-t" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+          <label className="block text-sm font-semibold mb-2" style={{ color: '#e5e5e5' }}>
             📍 Impact Coordinates
           </label>
-          <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg space-y-1">
+          <div className="text-sm p-3 rounded-lg space-y-1" style={{ background: 'rgb(30, 30, 48)', color: '#9ca3af' }}>
             <p>
               <span className="font-medium">Lat:</span> {parameters.location.lat.toFixed(4)}°
             </p>

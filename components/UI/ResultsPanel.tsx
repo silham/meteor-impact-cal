@@ -10,8 +10,8 @@ interface ResultsPanelProps {
 export default function ResultsPanel({ results, hasLocation }: ResultsPanelProps) {
   if (!hasLocation) {
     return (
-      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-        <p className="text-gray-500 text-sm text-center italic">
+      <div className="p-4 rounded-lg border" style={{ background: 'rgb(30, 30, 48)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+        <p className="text-sm text-center italic" style={{ color: '#9ca3af' }}>
           Select an impact location on the map
         </p>
       </div>
@@ -20,8 +20,8 @@ export default function ResultsPanel({ results, hasLocation }: ResultsPanelProps
 
   if (!results) {
     return (
-      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-        <p className="text-gray-500 text-sm text-center italic">Calculating...</p>
+      <div className="p-4 rounded-lg border" style={{ background: 'rgb(30, 30, 48)', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+        <p className="text-sm text-center italic" style={{ color: '#9ca3af' }}>Calculating...</p>
       </div>
     );
   }
@@ -35,17 +35,18 @@ export default function ResultsPanel({ results, hasLocation }: ResultsPanelProps
 
   return (
     <div className="space-y-4">
-      <div className="border-t border-gray-200 pt-4">
-        <h3 className="text-lg font-bold text-gray-800 mb-3">Impact Results</h3>
+      <div className="border-t pt-4" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+        <h3 className="text-lg font-bold mb-3" style={{ color: '#e5e5e5' }}>Impact Results</h3>
         
         {/* Impact Type Badge */}
         <div className="mb-4">
           <span
-            className={`inline-block px-4 py-2 rounded-full text-sm font-semibold ${
+            className="inline-block px-4 py-2 rounded-full text-sm font-semibold"
+            style={
               results.impactType === 'airburst'
-                ? 'bg-blue-100 text-blue-800'
-                : 'bg-red-100 text-red-800'
-            }`}
+                ? { background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa' }
+                : { background: 'rgba(239, 68, 68, 0.2)', color: '#f87171' }
+            }
           >
             {results.impactType === 'airburst' ? '☁️ Airburst' : '💥 Surface Impact'}
           </span>
@@ -54,18 +55,18 @@ export default function ResultsPanel({ results, hasLocation }: ResultsPanelProps
         {/* Compact Stats */}
         <div className="space-y-3">
           {/* Energy */}
-          <div className="bg-gray-50 p-3 rounded-lg">
-            <p className="text-xs text-gray-600 mb-1">Impact Energy</p>
-            <p className="text-xl font-bold text-gray-900">
+          <div className="p-3 rounded-lg" style={{ background: 'rgb(30, 30, 48)' }}>
+            <p className="text-xs mb-1" style={{ color: '#9ca3af' }}>Impact Energy</p>
+            <p className="text-xl font-bold" style={{ color: '#e5e5e5' }}>
               {formatNumber(results.energyTNT)} Mt TNT
             </p>
           </div>
 
           {/* Crater */}
           {results.impactType === 'surface' && results.craterDiameter > 0 && (
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <p className="text-xs text-gray-600 mb-1">Crater Diameter</p>
-              <p className="text-xl font-bold text-gray-900">
+            <div className="p-3 rounded-lg" style={{ background: 'rgb(30, 30, 48)' }}>
+              <p className="text-xs mb-1" style={{ color: '#9ca3af' }}>Crater Diameter</p>
+              <p className="text-xl font-bold" style={{ color: '#e5e5e5' }}>
                 {(results.craterDiameter / 1000).toFixed(2)} km
               </p>
             </div>
@@ -73,47 +74,47 @@ export default function ResultsPanel({ results, hasLocation }: ResultsPanelProps
 
           {/* Seismic */}
           {(results.impactType === 'surface' || results.seismicMagnitude > 2) && (
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <p className="text-xs text-gray-600 mb-1">Seismic Magnitude</p>
-              <p className="text-xl font-bold text-gray-900">
+            <div className="p-3 rounded-lg" style={{ background: 'rgb(30, 30, 48)' }}>
+              <p className="text-xs mb-1" style={{ color: '#9ca3af' }}>Seismic Magnitude</p>
+              <p className="text-xl font-bold" style={{ color: '#e5e5e5' }}>
                 {results.seismicMagnitude.toFixed(1)}
               </p>
             </div>
           )}
 
           {/* Blast Radii */}
-          <div className="bg-gray-50 p-3 rounded-lg">
-            <p className="text-xs text-gray-600 mb-2">Blast Radii</p>
+          <div className="p-3 rounded-lg" style={{ background: 'rgb(30, 30, 48)' }}>
+            <p className="text-xs mb-2" style={{ color: '#9ca3af' }}>Blast Radii</p>
             <div className="space-y-1 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600">20 psi:</span>
-                <span className="font-semibold">{results.blastRadius.twentyPsi.toFixed(1)} km</span>
+                <span style={{ color: '#9ca3af' }}>20 psi:</span>
+                <span className="font-semibold" style={{ color: '#e5e5e5' }}>{results.blastRadius.twentyPsi.toFixed(1)} km</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">5 psi:</span>
-                <span className="font-semibold">{results.blastRadius.fivePsi.toFixed(1)} km</span>
+                <span style={{ color: '#9ca3af' }}>5 psi:</span>
+                <span className="font-semibold" style={{ color: '#e5e5e5' }}>{results.blastRadius.fivePsi.toFixed(1)} km</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">1 psi:</span>
-                <span className="font-semibold">{results.blastRadius.onePsi.toFixed(1)} km</span>
+                <span style={{ color: '#9ca3af' }}>1 psi:</span>
+                <span className="font-semibold" style={{ color: '#e5e5e5' }}>{results.blastRadius.onePsi.toFixed(1)} km</span>
               </div>
             </div>
           </div>
 
           {/* Thermal */}
-          <div className="bg-gray-50 p-3 rounded-lg">
-            <p className="text-xs text-gray-600 mb-1">🔥 Thermal Radius</p>
-            <p className="text-xl font-bold text-gray-900">
+          <div className="p-3 rounded-lg" style={{ background: 'rgb(30, 30, 48)' }}>
+            <p className="text-xs mb-1" style={{ color: '#9ca3af' }}>🔥 Thermal Radius</p>
+            <p className="text-xl font-bold" style={{ color: '#e5e5e5' }}>
               {results.thermalRadius.toFixed(1)} km
             </p>
-            <p className="text-xs text-gray-500 mt-1">3rd degree burns</p>
+            <p className="text-xs mt-1" style={{ color: '#6b7280' }}>3rd degree burns</p>
           </div>
         </div>
 
         {/* Airburst Note */}
         {results.impactType === 'airburst' && (
-          <div className="mt-4 bg-blue-50 border-l-4 border-blue-500 p-3 rounded">
-            <p className="text-xs text-blue-900 font-medium">
+          <div className="mt-4 border-l-4 p-3 rounded" style={{ background: 'rgba(59, 130, 246, 0.1)', borderColor: '#3b82f6' }}>
+            <p className="text-xs font-medium" style={{ color: '#60a5fa' }}>
               Atmospheric explosion - no crater formed
             </p>
           </div>
