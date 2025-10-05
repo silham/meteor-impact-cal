@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   title: "Meteor Impact Simulator - NASA Space Apps 2025",
   description: "Interactive asteroid and comet impact calculator using real physics equations. Simulate historical impacts like Tunguska, Chelyabinsk, and Chicxulub on an interactive world map.",
   keywords: ["meteor", "asteroid", "impact", "simulator", "NASA", "space", "physics", "crater"],
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
