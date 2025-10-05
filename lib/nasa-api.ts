@@ -83,6 +83,18 @@ export async function getAsteroidById(asteroidId: string): Promise<NASAAsteroid>
   return response.json();
 }
 
+export interface NASAFeedResponse {
+  links: {
+    next: string;
+    previous: string;
+    self: string;
+  };
+  element_count: number;
+  near_earth_objects: {
+    [date: string]: NASAAsteroid[];
+  };
+}
+
 /**
  * Search for asteroids approaching Earth within a date range
  * @param startDate Format: YYYY-MM-DD
@@ -91,7 +103,7 @@ export async function getAsteroidById(asteroidId: string): Promise<NASAAsteroid>
 export async function getAsteroidsByDate(
   startDate: string,
   endDate: string
-): Promise<any> {
+): Promise<NASAFeedResponse> {
   const url = `${NASA_API_BASE}/feed?start_date=${startDate}&end_date=${endDate}&api_key=${API_KEY}`;
   
   const response = await fetch(url);

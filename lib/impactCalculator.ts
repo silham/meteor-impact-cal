@@ -54,8 +54,9 @@ export class ImpactCalculator {
     // Step 4: Calculate the dispersion length (how much fragments spread)
     // L_d = H * ρ₀ / (C_d * ρ_m * sin(θ))
     const dragCoefficient = 2.0;
-    const dispersionLength = this.SCALE_HEIGHT * this.AIR_DENSITY_SEA_LEVEL / 
-                             (dragCoefficient * density * Math.sin(angleRad));
+    // Note: dispersion length calculation - used for theoretical reference
+    // const dispersionLength = this.SCALE_HEIGHT * this.AIR_DENSITY_SEA_LEVEL / 
+    //                          (dragCoefficient * density * Math.sin(angleRad));
 
     // Step 5: Determine if meteor reaches ground intact
     // If dispersion length >> diameter, fragments separate and airburst
@@ -63,7 +64,8 @@ export class ImpactCalculator {
     
     // Critical ratio from Hills & Goda (1993): 
     // Airburst if: breakup_altitude / dispersion_length > 3 * diameter
-    const impactParameter = breakupAltitude / (params.diameter * Math.sin(angleRad));
+    // Note: impact parameter calculation - used for theoretical reference
+    // const impactParameter = breakupAltitude / (params.diameter * Math.sin(angleRad));
     
     // More sophisticated determination:
     // 1. Very large meteors (>200m) almost always reach ground

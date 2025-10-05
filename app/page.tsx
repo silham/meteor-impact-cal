@@ -200,7 +200,7 @@ export default function Home() {
           url: shareURL,
         });
         return;
-      } catch (err) {
+      } catch {
         // User cancelled or share failed, fall back to clipboard
       }
     }
@@ -209,7 +209,7 @@ export default function Home() {
     try {
       await navigator.clipboard.writeText(shareURL);
       alert('Share link copied to clipboard!');
-    } catch (err) {
+    } catch {
       // If clipboard API fails, show the URL in a prompt
       prompt('Copy this URL to share:', shareURL);
     }
