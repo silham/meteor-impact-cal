@@ -231,13 +231,6 @@ export default function Home() {
           impactZones={impactZones}
           onLocationSelect={handleLocationSelect}
         />
-        
-        {/* Top Left Logo/Title */}
-        <div className="absolute top-4 left-4 z-[1000] pointer-events-none">
-          <h1 className="text-2xl font-bold text-white drop-shadow-lg">
-            METEOR IMPACT
-          </h1>
-        </div>
 
         {/* Bottom Center Click Prompt */}
         {(!parameters.location.lat && !parameters.location.lng) && (
